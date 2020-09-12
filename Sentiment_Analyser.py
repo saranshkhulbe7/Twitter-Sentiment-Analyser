@@ -45,7 +45,8 @@ lines = ptdr.readlines()
 rd_header = "Number of Retweets,Number of Replies,Positive Score,Negative Score,Net Score"
 total_positive = 0                                                                          #Counter For All Postive Words In All The Tweets So Far
 total_negative = 0                                                                          #Counter For All Negative Words In All The Tweets So Far
-
+total_positive_impact = 0
+total_negative_impact = 0                                                                         
 for i in range(len(lines)):
     if i == 0:
         rd.write(rd_header)
@@ -58,8 +59,10 @@ for i in range(len(lines)):
         Nrp = line_content_list[2]
         pos_count = get_pos(line_content_list[0])
         total_positive = total_positive + pos_count
+        total_positive_impact = total_positive_impact + pos_count * int(Nrt)
         neg_count = get_neg(line_content_list[0])
         total_negative = total_negative + neg_count
+        total_negative_impact = total_negative_impact + neg_count * int(Nrt)
         net_score = pos_count - neg_count
         row_string = "{},{},{},{},{}".format(Nrt,Nrp,pos_count,neg_count,net_score)
         rd.write(row_string)
@@ -74,12 +77,15 @@ plt.scatter(Net, Nrt)
 plt.title("Sentiment Analysis")
 plt.show()
 
-pie_data = [total_positive,total_negative]                                                          #Plotting Pie Chart
+pie_data1 = [total_positive,total_negative]                                                          #Plotting Pie Chart
 Sentiments = ["%Positive Sentiments","%Negative Sentiments"]
 explode = (0.1, 0)
-colors = ["yellowgreen", 'lightcoral']
+colors1 = ["yellowgreen", 'lightcoral']
 fig = plt.figure(figsize =(10, 7)) 
-plt.pie(pie_data, labels = Sentiments,shadow = True,autopct='%1.2f%%',explode=explode,colors = colors)
-    
-    
+plt.pie(pie_data1, labels = Sentiments,shadow = True,autopct='%1.2f%%',explode=explode,colors = colors1)
 
+colors2 = ["green", 'coral']
+pie_data2 = [total_positive_impact,total_negative_impact]
+Impacts = ["%Positive Impact On People","%Negative Impact On People"]
+fig = plt.figure(figsize =(10, 7)) 
+plt.pie(pie_data2, labels = Impacts,shadow = True,autopct='%1.2f%%',explode=explode,colors = colors2)
