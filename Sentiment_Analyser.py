@@ -1,14 +1,14 @@
 import matplotlib.pyplot as plt                                                             #Importing Modules
 import pandas as pd
 
-punctuation_chars = ["'", '"', ",", ".", "!", ":", ";", '#', '@']      
+punctuation_chars = ["'", '"', ",", ".", "!", ":", ";", '#', '@']
 
 def strip_punctuation(word):                                                                #strip_punctuation() Removes Punctuators In A Particular Word
     for c in word:
         if c in punctuation_chars:
             word = word.replace(c,"")
     return word
-    
+
 positive_words = []        #List Of All Positive Words
 with open("positive_words.txt") as pos_f:
     for lin in pos_f:
@@ -46,7 +46,7 @@ rd_header = "Number of Retweets,Number of Replies,Positive Score,Negative Score,
 total_positive = 0                                                                          #Counter For All Postive Words In All The Tweets So Far
 total_negative = 0                                                                          #Counter For All Negative Words In All The Tweets So Far
 total_positive_impact = 0
-total_negative_impact = 0                                                                         
+total_negative_impact = 0
 for i in range(len(lines)):
     if i == 0:
         rd.write(rd_header)
@@ -67,7 +67,9 @@ for i in range(len(lines)):
         row_string = "{},{},{},{},{}".format(Nrt,Nrp,pos_count,neg_count,net_score)
         rd.write(row_string)
         rd.write("\n")
-        
+rd.close()
+
+plt.figure(0)
 d = pd.read_csv(result_csv_file)                                                                    #Plotting Scatter Plot
 Nrt = d["Number of Retweets"]
 Net = d["Net Score"]
@@ -75,17 +77,20 @@ plt.xlabel("Net Sentiment Score")
 plt.ylabel("Number of Retweets")
 plt.scatter(Net, Nrt)
 plt.title("Sentiment Analysis")
-plt.show()
 
+plt.figure(1)
 pie_data1 = [total_positive,total_negative]                                                          #Plotting Pie Chart
 Sentiments = ["%Positive Sentiments","%Negative Sentiments"]
 explode = (0.1, 0)
 colors1 = ["yellowgreen", 'lightcoral']
-fig = plt.figure(figsize =(10, 7)) 
+fig = plt.figure(figsize =(10, 7))
 plt.pie(pie_data1, labels = Sentiments,shadow = True,autopct='%1.2f%%',explode=explode,colors = colors1)
 
+plt.figure(2)
 colors2 = ["green", 'coral']
 pie_data2 = [total_positive_impact,total_negative_impact]
 Impacts = ["%Positive Impact On People","%Negative Impact On People"]
-fig = plt.figure(figsize =(10, 7)) 
+fig = plt.figure(figsize =(10, 7))
 plt.pie(pie_data2, labels = Impacts,shadow = True,autopct='%1.2f%%',explode=explode,colors = colors2)
+
+plt.show()
